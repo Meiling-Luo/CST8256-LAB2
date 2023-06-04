@@ -1,0 +1,109 @@
+﻿@page
+@model Lab2.Pages.RegistrationModel
+@using AcademicManagement
+@{
+    ViewData["Title"] = "Registration";
+    SelectList Options = new SelectList(DataAccess.GetAllStudents(),"StudentId","StudentName");
+}
+
+<div class="text-center">
+    <h1 class="display-4">Registrations</h1>
+    <hr>
+</div>
+<br></br>
+
+
+<form class="row row-cols-lg-auto g-3 align-items-center" method="post" asp-page-handler="OnPost">
+  <div class="col-12">
+    <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+        <select asp-for="SelectedStudentName" asp-items="Options" class="form-control" id="inlineFormSelectPref">
+            <option value="-1">Choose a name</option>
+        </select>
+  </div>
+  <div class="col-12">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+</form>
+
+@if (Model.ShowRegistrationInfo)
+{
+    <form method="post">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Course code</th>
+                    <th scope="col">Course Title</th>
+                    <th scope="col">Check to Register</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in DataAccess.GetAllCourses())
+                {
+
+                    <tr>
+                        <td> @course.CourseCode</td>
+                        <td>@course.CourseTitle</td>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="SelectedCourseCode" value="@course.CourseCode">
+                                <label class="custom-control-label" for="customCheck1"></label>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br></br>
+
+        <button type="submit" class="btn btn-primary">Get Register</button>
+
+        <br></br>
+
+
+    </form>
+   
+}
+
+else
+{
+     <div class="alert alert-danger" role="alert">
+        Please select a student.
+    </div>
+    <br></br>
+}
+
+        
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <label class="control-label">Course Code</label>
+                </th>
+                <th>
+                    <label class="control-label">Course Title</label>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+  <tbody>
+            @foreach (var courseCode in Model.SelectedCourseCode)
+            {
+                var course = DataAccess.GetAllCourses().FirstOrDefault(c => c.CourseCode == courseCode);
+
+                if (course != null)
+                {
+                    <tr>
+                        <td>@course.CourseCode</td>
+                        <td>@course.CourseTitle</td>
+                    </tr>
+                }
+            }
+         <tbody>
+        </tbody>
+</table>
+
+    <br></br>
+    <p class="alert-primary">
+    </p>
